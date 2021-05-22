@@ -1,122 +1,91 @@
 #import "LevelOrderTraversal.h"
 #import "RSNode.h"
-//```
-//   ┌── 8
-//┌──7
-//│  │  ┌── 6
-//│  └──5
-//│     └── nil
-//4
-//│  ┌── 3
-//└──2
-//   └── 1
 
-
+// Костыль :C
 NSArray *LevelOrderTraversalForTree(NSArray *tree) {
-//    NSMutableDictionary<NSNumber *, NSMutableArray *> *dict = [[NSMutableDictionary<NSNumber *, NSMutableArray *> alloc] init];
-//    NSMutableArray *filteredTree = [[NSMutableArray alloc] init];
-//    NSMutableArray *resultTree = [[NSMutableArray alloc] init];
-//
-//    RSNode *node = [[RSNode alloc] initWithValue:tree[0]];
+
+    if ([tree count] == 0) {
+        return @[];
+    }
     
-//    NSArray *testTree = @[@4,@2,@1,[NSNull null],[NSNull null],@3,[NSNull null],[NSNull null],@7,@5,[NSNull null],@6,[NSNull null],[NSNull null],@8];
-//    
-//    NSMutableArray<RSNode *> *nodes = [[NSMutableArray alloc] init];
-//    
-//    int j;
-//    for (j = 0; j < [testTree count]; j++) {
-//        RSNode *newNode = [[RSNode alloc] initWithValue:testTree[j]];
-//        
-////        if (j + 1 < [testTree count]) {
-////            if ( [testTree[j] isKindOfClass:NSNumber.class] == true ) {
-////                newNode.bottom = testTree[j + 1];
-////            } else {
-////                newNode.bottom = nil;
-////            }
-////        } else {
-////            newNode.bottom = nil;
-////        }
-////        
-////        if (j + 2 < [testTree count]) {
-////            if ( [testTree[j] isKindOfClass:NSNumber.class] == true ) {
-////                newNode.bottom = testTree[j + 2];
-////            } else {
-////                newNode.bottom = nil;
-////            }
-////        } else {
-////            newNode.bottom = nil;
-////        }
-//        BOOL *needToAdd = true;
-//        if ([nodes count] == 0 ) {
-//            [nodes addObject:newNode];
-//        } else {
-//            int i;
-//            for (i = ((int)[nodes count] - 1); i > -1; i--) {
-//                if ([nodes[i].bottom isKindOfClass:NSNumber.class] != true &&
-//                    [nodes[i].bottom isKindOfClass:NSNull.class] != true ) {
-//                    nodes[i].bottom = newNode.value;
-//                    needToAdd = false;
-//                    break;
-//                } else if ([nodes[i].top isKindOfClass:NSNumber.class] != true &&
-//                           [nodes[i].top isKindOfClass:NSNull.class] != true ) {
-//                    nodes[i].top = newNode.value;
-//                    needToAdd = false;
-//                    break;
-//                }
-//            }
-//            if (needToAdd) {
-//                [nodes addObject:newNode];
-//            }
-//        }
-//    }
-//    NSLog(nodes);
-//    NSLog(nodes);
+    NSMutableArray<RSNode *> *nodes = [[NSMutableArray alloc] init];
     
-//    [resultTree addObject:tree[0]];
-//    NSInteger *step = 0;
-//    int k;
-//    for (k = 0; k < [tree count]; k++) {
-//        if (k % 2 == 0) {
-//
-//        } else {
-//
-//        }
-//        if ( [tree[k] isKindOfClass:NSNumber.class] == true ) {
-//            if ([[resultTree lastObject] isKindOfClass:NSNumber.class]) {
-//                [resultTree addObject:[NSMutableArray arrayWithObjects:tree[k], nil]];
-//            } else {
-//                NSMutableArray *array = [NSMutableArray arrayWithArray:[resultTree lastObject]];
-//
-//            }
-//            [resultTree addObject:tree[k]];
-//        }
-//    }
-//
-//    NSInteger *lvl = -1;
-//    NSInteger *extraNum = 0;
-//    BOOL *boxWasClosed = false;
-//    int i;
-//    for (i = 0; i < [tree count]; i++) {
-//        if (tree[i + 1] == nil) {
-//            continue;
-//        }
-//        if (tree[i + 1] == nil && tree[i + 2] == nil ) {
-//            lvl = lvl - 1;
-//            if (boxWasClosed) {
-//                extraNum = 1;
-//            }
-//            boxWasClosed = true;
-//        } else {
-//            boxWasClosed = false;
-//        }
-//        lvl = lvl - extraNum;
-//        lvl = lvl + 1;
-//        NSNumber *key = [NSNumber numberWithInteger:*lvl];
-//        NSMutableArray *newAr = [NSMutableArray arrayWithArray:dict[key]];
-//        [newAr addObject:filteredTree[(long)lvl]];
-//        dict[key] = newAr;
-//
-//    }
+    int j;
+    for (j = 0; j < [tree count]; j++) {
+        RSNode *newNode = [[RSNode alloc] initWithValue:tree[j]];
+        
+        if ([nodes count] == 0 ) {
+            if ([newNode.value isKindOfClass:NSNumber.class]) {
+                [nodes addObject:newNode];
+            }
+        } else {
+            int i;
+            for (i = ((int)[nodes count] - 1); i > -1; i--) {
+                if ([nodes[i].bottom isKindOfClass:NSNumber.class] != true &&
+                    [nodes[i].bottom isKindOfClass:NSNull.class] != true ) {
+                    nodes[i].bottom = newNode.value;
+
+                    break;
+                } else if ([nodes[i].top isKindOfClass:NSNumber.class] != true &&
+                           [nodes[i].top isKindOfClass:NSNull.class] != true ) {
+                    nodes[i].top = newNode.value;
+
+                    break;
+                }
+            }
+            if ([newNode.value isKindOfClass:NSNull.class] == false) {
+                [nodes addObject:newNode];
+            }
+        }
+    }
+    if ([nodes count] == 0) {
+        return @[];
+    }
+    NSMutableArray *results = [[NSMutableArray alloc] init];
     
-    return nil;
+    NSMutableDictionary<NSNumber *, NSMutableArray *> *dict = [[NSMutableDictionary alloc] init];
+    dict[[NSNumber numberWithInteger:0]] = [NSMutableArray arrayWithObject:nodes[0]];
+    NSNumber * index = [NSNumber numberWithInteger:0];
+
+    do {
+        int i;
+        for (i = 0; i < [dict[index] count]; i++) {
+            RSNode *node = dict[index][i];
+            if (dict[[NSNumber numberWithInteger:(index.intValue + 1)]] == nil) {
+                dict[[NSNumber numberWithInteger:(index.intValue + 1)]] = [[NSMutableArray alloc] init];
+            }
+        
+            int k;
+            for (k = 0; k < [nodes count]; k++) {
+                if ([node.bottom isKindOfClass:NSNumber.class] == true) {
+                    if (nodes[k].value == node.bottom) {
+                        [dict[[NSNumber numberWithInteger:(index.intValue + 1)]] addObject:nodes[k]];
+                    }
+                }
+                if ([node.top isKindOfClass:NSNumber.class] == true) {
+                    if (nodes[k].value == node.top) {
+                        [dict[[NSNumber numberWithInteger:(index.intValue + 1)]] addObject:nodes[k]];
+                    }
+                }
+            }
+            [nodes removeObject:node];
+        }
+        index = [NSNumber numberWithInteger:index.intValue + 1];
+        
+    } while ([nodes count] > 0);
+    
+    int i;
+    for (i = 0; i < [dict count]; i++) {
+        NSMutableArray *lvls = [[NSMutableArray alloc] init];
+        for (RSNode *node in dict[[NSNumber numberWithInt:i]]) {
+            if ([node.value isKindOfClass:NSNumber.class]) {
+                [lvls addObject:node.value];
+            }
+        }
+        if ([lvls count] > 0) {
+            [results addObject:lvls];
+        }
+    }
+    
+    return results;
 }
