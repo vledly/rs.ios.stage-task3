@@ -43,7 +43,7 @@
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd"];
     NSDate *beginDate = [dateFormat dateFromString: @"2021-05-17"];
-    NSDate *endDate = [dateFormat dateFromString: @"2021-05-23"];
+    NSDate *endDate = [dateFormat dateFromString: @"2021-05-24"];
     
     if ([date compare:beginDate] == NSOrderedAscending)
         return NO;
