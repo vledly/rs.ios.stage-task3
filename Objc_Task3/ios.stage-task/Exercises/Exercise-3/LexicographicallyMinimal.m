@@ -14,6 +14,7 @@
     NSMutableArray<NSString *> *string1A = [[NSMutableArray alloc] init];
     NSMutableArray<NSString *> *string2A = [[NSMutableArray alloc] init];
     
+    
     int i;
     for (i = 0; i < [string1 length]; i++) {
         [string1A addObject:[NSString stringWithFormat:@"%c",[string1 characterAtIndex:i]]];
@@ -25,10 +26,11 @@
     }
     
     do {
-        if ([string1A firstObject] == nil) {
+        if ([string1A firstObject] == nil && [string2A firstObject] != nil) {
             result = [result stringByAppendingString:string2A[0]];
+            
             [string2A removeObjectAtIndex:0];
-        } else if ([string2A firstObject] == nil) {
+        } else if ([string2A firstObject] == nil && [string1A firstObject] != nil) {
             result = [result stringByAppendingString:string1A[0]];
             [string1A removeObjectAtIndex:0];
         } else {
